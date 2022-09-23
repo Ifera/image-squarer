@@ -1,6 +1,11 @@
 ### image-squarer
 A simple python script to convert portrait or landscape images to a square (ideally for Instagram posts)
 
+### Requirements
+
+- Python 3.7+
+- OpenCV
+
 ### How to use
 
 - Download or clone the repository
