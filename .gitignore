@@ -133,6 +133,6 @@ dmypy.json
 nbproject/*
 
 # project stuff
-input/*
-output/*
-out/*
+input/
+output/
+out/
