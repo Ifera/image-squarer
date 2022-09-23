@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Common IDEs
+.idea/*
+nbproject/*
+
+# project stuff
+input/*
+output/*
+out/*
