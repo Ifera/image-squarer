@@ -30,9 +30,9 @@ def sqaure_img(img_path, size=None, color=(255, 255, 255)):
 parser = argparse.ArgumentParser(description="Turn a landscape or portrait image to a square")
 parser.add_argument("--path", type=str, default="./in/", help="Path to image or directory containing images or subdirectory of images")
 parser.add_argument("--loop", dest='loop', action='store_true', help="If the directory has sub directories then use this")
-parser.add_argument("--out", type=str, default="./out/", help="Path to output directory")
+parser.add_argument("--out", type=str, default="export", help="Name for the output folder")
 parser.add_argument("--size", type=int, default=None, help="Set desired size for image, default: None")
-parser.add_argument("--color", type=tuple, default=(255, 255, 255), help="Color of the border, default: (255, 255, 255)")
+parser.add_argument("--color", type=int, default=None, help="Color of the border, default: 255 255 255", nargs="+")
 parser.set_defaults(loop=False)
 args = parser.parse_args()
 
@@ -40,7 +40,11 @@ path = args.path
 loop = args.loop
 out = args.out
 size = args.size
-color = args.color
+
+if args.color is None:
+    color = (255,255,255)
+else:
+    color = tuple(args.color)
 
 in_dir = os.path.join(os.getcwd(), path)
 
@@ -48,11 +52,11 @@ if not os.path.exists(path) or not os.path.exists(in_dir):
     print("error: invalid --path provided")
     exit(1)
 
-out_dir = os.path.join(os.getcwd(), out)
-create_dir(out_dir)
-
 if os.path.isfile(path):
     img_name = os.path.basename(path)
+    out_dir = os.path.join(os.path.dirname(path), out)
+    create_dir(out_dir)
+
     img_out = os.path.join(out_dir, img_name)
     img = sqaure_img(path, size=size, color=color)
     cv2.imwrite(img_out, img)
@@ -65,13 +69,16 @@ if not loop:
     exit(1)
 
 for root, dirs, files in os.walk(in_dir, topdown=False):
-    cp = os.path.commonpath([in_dir, root])
-    out_path = root.replace(cp, out_dir)
-    create_dir(out_path)
+    out_dir = os.path.join(root, out)
+
+    if os.path.basename(root) == os.path.basename(out_dir):
+        continue
+
+    create_dir(out_dir)
 
     for img_name in files:
         img_path = os.path.join(root, img_name)
-        img_out = os.path.join(out_path, img_name)
+        img_out = os.path.join(out_dir, img_name)
 
         img = sqaure_img(img_path, size=size, color=color)
         cv2.imwrite(img_out, img)
